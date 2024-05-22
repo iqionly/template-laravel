@@ -39,7 +39,7 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
-        ],
+        ]
     ],
 
     /*
@@ -69,6 +69,12 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+    ],
+
+    'custom_auths' => [
+        'field' => env('CUST_AUTH_FIELD', 'email'),
+        'field_customs' => env('CUST_USER_MODEL_FIELD', null),
+        'password' => env('CUST_AUTH_PASSWORD', 'password'), 
     ],
 
     /*

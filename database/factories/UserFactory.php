@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -17,6 +18,18 @@ class UserFactory extends Factory
     protected static ?string $password;
 
     /**
+     * Configure the model factory.
+     */
+    // public function configure(): static
+    // {
+    //     return $this->afterMaking(function (User $user) {
+    //         // ...
+    //     })->afterCreating(function (User $user) {
+            
+    //     });
+    // }
+
+    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -24,7 +37,8 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'name' => $name = fake()->name(),
+            'username' => str_replace(" ", "", strtolower($name)),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
@@ -39,6 +53,16 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Set username for the user.
+     */
+    public function setUsername(string $username): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'username' => $username,
         ]);
     }
 }
