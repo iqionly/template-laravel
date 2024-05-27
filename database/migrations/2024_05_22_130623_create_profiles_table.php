@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('userables', function (Blueprint $table) {
+        Schema::create('profiles', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('userable_id');
-            $table->string('userable_type');
-            $table->tinyText('description')->nullable();
+            $table->tinyText('photos')->nullable();
             $table->timestamps();
-
-            $table->unique(['user_id', 'userable_id', 'userable_type']); // Uniquing to one user have just one ownering data in that table
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('userables');
+        Schema::dropIfExists('profiles');
     }
 };

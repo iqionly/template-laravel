@@ -244,6 +244,22 @@
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
+                        <ul class="nav flex-column mx-2 d-block mb-4">
+                            <li class="nav-item">
+                                <div class="nav-link d-flex align-items-center active border border-1 rounded d-inline" aria-current="page" href="#">
+                                    @if($user = request()->user())
+                                        <a href="{{ route('admins.settings.index') }}" class="col-10 d-flex align-items-center text-decoration-none">
+                                            <div src="#" class="rounded-circle img-thumbnail" alt="user-photo-profile" style="width:11%;padding:11%;background-image:url({{ $user->profile->photos ?? asset('/storage/photos/default-photos.jpeg') }});background-size: cover;background-position: center;"></div>
+                                            <label class="ms-2 text-nowrap">{{ $user->name }}</label>
+                                        </a>
+                                        <a href="{{ route('logout') }}" class="col-2 text-end">
+                                            <i class="fa fa-sign-out fa-lg mt-1 me-sm-3 me-md-0"></i>
+                                                <use xlink:href="#door-closed" /></svg>
+                                        </a>
+                                    @endif
+                                </div>
+                            </li>
+                        </ul>
                         <ul class="nav flex-column">
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="#">
@@ -254,14 +270,14 @@
                             </li>
                         </ul>
 
-                        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-body-secondary text-uppercase">
+                        {{-- <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-body-secondary text-uppercase">
                             <span>Saved reports</span>
                             <a class="link-secondary" href="#" aria-label="Add a new report">
                                 <svg class="bi">
                                     <use xlink:href="#plus-circle" /></svg>
                             </a>
                         </h6>
-                        {{-- <ul class="nav flex-column mb-auto">
+                        <ul class="nav flex-column mb-auto">
                             <li class="nav-item">
                                 <a class="nav-link d-flex align-items-center gap-2" href="#">
                                     <svg class="bi">
@@ -310,13 +326,6 @@
                                     Settings
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center gap-2" href="{{ url('/logout') }}">
-                                    <i class="fa fa-sign-out fa-lg"></i>
-                                        <use xlink:href="#door-closed" /></svg>
-                                    Sign out
-                                </a>
-                            </li>
                         </ul>
                     </div>
                 </div>
@@ -333,6 +342,9 @@
         </div>
     </div>
     
+    <script>
+        const APP_URL = "{{ config('app.url') }}";
+    </script>
     @vite('resources/js/app.js')
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script>

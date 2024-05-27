@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Profile;
+use App\Models\User;
 use App\Rules\CheckboxValidationOnOffRule;
-use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Routing\Controllers\Middleware as ControllersMiddleware;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
@@ -17,6 +17,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->registerClasses();
+
+        $this->registerGateWebRoute();
     }
 
     /**
@@ -54,6 +56,13 @@ class AppServiceProvider extends ServiceProvider
         // Force the root url and scheme
         app('url')->forceRootUrl($url_app);
         app('url')->forceScheme($scheme);
+    }
+
+    private function registerGateWebRoute(): void
+    {
+        Gate::define('update-profile', function(User $user, Profile $profile) {
+            return $user->id === $profile->user_id;
+        });
     }
 
     private function customRuleValidator(): void

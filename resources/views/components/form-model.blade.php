@@ -1,4 +1,4 @@
-<form action="{{ $action }}" method="post" name="{{ $id }}" id="{{ $id }}">
+<form action="{{ $action }}" method="post" name="{{ $id }}" id="{{ $id }}" class="mb-5" enctype="multipart/form-data">
     @csrf
     <div class="row">
         <div class="col">
@@ -7,12 +7,12 @@
         </div>
     </div>
     {{ $slot }}
-    <div class="mb-5 row">
+    <div class="row">
         <div class="col" style="height: 47px;">
             <button type="button" class="reset btn btn-success mt-2">Reset To Default</button>
         </div>
         <div class="col text-end" style="height: 47px;">
-            <button type="submit" class="submit btn btn-danger mt-2 d-none">Save</button>
+            <button type="submit" class="submit btn btn-danger mt-2 {{ !$hideSubmit ?: 'd-none' }}">Save</button>
         </div>
     </div>
 </form>

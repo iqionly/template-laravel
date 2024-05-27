@@ -11,6 +11,12 @@ Route::middleware(['auth:sanctum', 'verified'])
         return view('dashboard');
     });
 
+    Route::name('user.')
+    ->prefix('user')
+    ->group(function(){
+        require_once 'user.php';
+    });
+
     Route::name('admins.')
     ->prefix('admins')
     ->group(function(){

@@ -18,6 +18,7 @@ class FormModel extends Component
         public string $header,
         public string $method = 'POST',
         public string $description = '',
+        public bool $hideSubmit = true
     ) { 
         $this->id = 'form-model-' . md5($action . $header);
     }

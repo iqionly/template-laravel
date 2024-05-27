@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -88,13 +90,18 @@ class User extends Authenticatable
         return date('Y-m-d H:i:s', strtotime($value));
     }
 
-    public function setting()
+    public function setting(): MorphOne
     {
         return $this->morphOne(Setting::class, 'userable');
     }
 
-    public function settings()
+    public function settings(): MorphToMany
     {
         return $this->morphedByMany(Setting::class, 'userable');
+    }
+
+    public function profile(): HasOne
+    {
+        return $this->hasOne(Profile::class);
     }
 }
