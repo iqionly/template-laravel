@@ -2,12 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\Overrides\PersonalAccessToken;
 use App\Models\Profile;
 use App\Models\User;
 use App\Rules\CheckboxValidationOnOffRule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
         $this->registerClasses();
 
         $this->registerGateWebRoute();
+
+        $this->registerModelsOverride();
     }
 
     /**
@@ -34,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
         // Register the SettingUtility class
         $this->app->bind('setting-utility', function() {
             return new \App\Utilities\SettingUtility();
+        });
+
+        $this->app->bind('route-utility', function() {
+            return new \App\Utilities\RouteUtility();
         });
     }
 
@@ -63,6 +71,11 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('update-profile', function(User $user, Profile $profile) {
             return $user->id === $profile->user_id;
         });
+    }
+
+    private function registerModelsOverride(): void
+    {
+        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
     }
 
     private function customRuleValidator(): void

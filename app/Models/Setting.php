@@ -6,6 +6,7 @@ use App\Observers\SettingObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
@@ -35,7 +36,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 #[ObservedBy([SettingObserver::class])]
 class Setting extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $casts = [
         'values' => 'object'

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('userables', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('userable_id');
+            $table->char('userable_id', 36);
             $table->string('userable_type');
             $table->tinyText('description')->nullable();
             $table->timestamps();

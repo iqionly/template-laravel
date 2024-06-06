@@ -18,7 +18,6 @@ class SettingFactory extends Factory
     public function definition(): array
     {
         return [
-            'uuid' => Str::uuid(),
             'name' => $this->faker->unique()->word(),
             'values' => [], // Default is empty array
             'is_active' => true,

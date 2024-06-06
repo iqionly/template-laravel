@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Overrides\PersonalAccessToken;
+use App\Models\User;
 use Illuminate\Http\Request;
 use \Illuminate\Contracts\Auth\Factory as AuthFactory;
 use \Illuminate\Contracts\Auth\Guard as AuthGuard;
 use \Illuminate\Contracts\Auth\StatefulGuard as AuthStateful;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 class AuthController extends Controller
@@ -23,7 +26,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-
+        
     }
 
     public function index(Request $request)
@@ -32,6 +35,15 @@ class AuthController extends Controller
             return response()->json(['message' => 'Login Page']);
 
         return view(self::$viewPath . 'login');
+    }
+
+    public function check_token(Request $request)
+    {
+        $result = ['message' => 'Token Invalid'];
+        if($request->hasHeader('Authorization') && $request->bearerToken() && $access_token = PersonalAccessToken::findToken($request->bearerToken())) {
+            $result = ['message' => 'Token Valid', 'access_token' => $access_token];
+        }
+        return response()->json($result);
     }
 
     public function login(Request $request)
@@ -43,10 +55,17 @@ class AuthController extends Controller
 
         $authenticated = auth()->attempt($credentials);
 
-        if($request->expectsJson() && $authenticated)
-            return response()->json(['message' => 'Login Success']);
-        elseif($request->expectsJson())
+        if($request->expectsJson() && $authenticated) {
+            $user = Auth::user();
+            // If user has token before, then revoke it and create new token
+            if($user->tokens()->count() > 0) {
+                $user->tokens()->delete();
+            }
+            $token = $user->createToken('auth-token', ['authorize']);
+            return response()->json(['message' => 'Login Success', 'token' => $token->plainTextToken]);
+        } elseif($request->expectsJson()) {
             return response()->json(['message' => 'Login Failed'], 401);
+        }
 
         if($authenticated)
             return redirect()->intended(self::getHomeRoute())->with('success', 'auth.success');
@@ -61,6 +80,10 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         auth()->logout();
+
+        $user = Auth::user();
+        // Revoking all tokens
+        $user->tokens()->delete();
 
         if($request->expectsJson())
             return response()->json(['message' => 'Logout Success']);

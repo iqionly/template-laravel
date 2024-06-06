@@ -6,6 +6,8 @@ use App\Facades\SettingUtil;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateSettingsRequest;
 use App\Models\Setting;
+use App\Facades\RouteUtil;
+use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
@@ -25,9 +27,11 @@ class SettingController extends Controller
         $this->update_config = route('admins.settings.update-config');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return view('admins.settings.index', ['settings' => SettingUtil::getSettings(), 'update_config' => $this->update_config]);
+        if($request->expectsJson())
+            return response()->json(['result' => SettingUtil::getSettings(), 'navigation' => RouteUtil::routesPref('admins.settings')]);
+        return view('admins.settings.index', ['settings' => SettingUtil::getSettings(), 'navigation' => RouteUtil::routesPref('admins.settings'), 'update_config' => $this->update_config]);
     }
 
     public function store(UpdateSettingsRequest $request)
@@ -48,6 +52,8 @@ class SettingController extends Controller
 
         if($setting->save())
         {
+            if($request->expectsJson())
+                return response()->json(['result' => $setting, 'message' => 'Settings Updated']);
             return redirect()->back();
         }
     }
